@@ -1,0 +1,81 @@
+﻿@page "{id}"
+@using ContosoCrafts.WebSite.Services
+@using ContosoCrafts.WebSite.Components
+@inject JsonFileProductService ProductService
+@model ReadModel
+@{
+    ViewData["Title"] = "Restaurant Detail";
+}
+<script src="_framework/blazor.server.js"></script>
+<div class="container">
+        <div class="mt-5 content">
+            @if (Model.Product != null)
+            {
+                <div class="row">
+                    <div class="col-md-4">
+                        <img src="@Model.Product.Image" class="img-fluid" 
+                            onerror="this.src='https://d1csarkz8obe9u.cloudfront.net/posterpreviews/restaurant-instagram-post-advertisement-design-template-5e3dde31601916fac13b611b18066f52_screen.jpg?ts=1622274831';this.onerror='';"/>
+                        <table class="table table-striped">
+                            <thead class="thead">
+                                <th>Day</th><th>Hours</th>
+                            </thead>
+                            <tbody>
+                                @{
+                                    var hours = Model.Hours;
+                                    for (int i = 0; i < hours.Count; i++)
+                                    {
+                                        <tr>
+                                            <td>@Model.Days[i]</td>
+                                            <td>@hours[i]</td>
+                                        </tr>
+                                    }
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="col-md-8">
+                        <h1>@Model.Product.Title</h1>
+                        <p>@Model.Product.Description</p>
+                        <div class="embed-responsive embed-responsive-16by9 mb-5">
+                            @{
+                                var apikey = "AIzaSyCUkutN1VIQIdgTfs-xbzw1sxL5woLls3Y";
+                                var location = Model.Product.Title + ",Seattle+Washington";
+                            }
+                            <iframe 
+                            class="embed-responsive-item"
+                            frameborder="0"
+                            referrerpolicy="no-referrer-when-downgrade"
+                            src="https://www.google.com/maps/embed/v1/place?key=@apikey&q=@location"
+                            allowfullscreen>
+                            </iframe>
+                        </div>
+                        <a href="@Model.Product.Url" target="_blank" class="btn btn-info">Visit Website</a>
+                        <a href="/Restaurants/Update/@Model.Product.Id" class="btn btn-update">Update</a>
+                        <a href="/Restaurants/Delete/@Model.Product.Id" class="btn btn-danger">Delete</a>
+
+                        <div class="jumbotron jumbotron-fluid bg-white">
+                            <h1>Comment</h1>
+                            <p class="lead">Tell us your experience at @Model.Product.Title.</p>
+                            <hr class="my-4">
+                            @{
+                                foreach (var comment in Model.Product.CommentList)
+                                {
+                                    <component type="typeof(CommentText)"
+                                    render-mode="ServerPrerendered"
+                                    param-Comment="@comment" />
+                                }
+                            }
+                            <form method="get">
+                                <textarea asp-for="Comment" class="form-control my-3 mr-2" rows="3" value="@Model.Comment"></textarea>
+                                <button class="btn btn-comment my-3 my-sm-0" type="submit">Add Comment</button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            }
+            else
+            {
+                <h3>Not Found</h3>
+            }
+        </div>
+</div>

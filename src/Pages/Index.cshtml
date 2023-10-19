@@ -1,0 +1,21 @@
+﻿@page
+@using ContosoCrafts.WebSite.Components
+@model IndexModel
+@{
+    ViewData["Title"] = "Home page";
+}
+<div class="d-flex flex-column justify-content-center hero-section">
+    <div class="bg-video">
+        <video class="bg-video-content" autoplay muted loop>
+            <source src="https://webmshare.com/download-webm/x8ZXJ" type="video/webm">
+            Your browser is not supported!
+        </video>
+    </div>
+    <div id="home-title1" class="p-2">Feeling Hungry</div>
+    <a id="home-title2" class="p-2" href="/Home">See What's Open</a>
+    <a href="/Home">
+        <img id="utensils-image" src="~/data/Utensils.png" class="animation_rotate" alt="utensils" />
+    </a>
+</div>
+
+<script src="_framework/blazor.server.js"></script>

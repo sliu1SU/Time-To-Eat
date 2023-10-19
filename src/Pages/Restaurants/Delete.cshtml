@@ -1,0 +1,26 @@
+﻿@page "{id}"
+@model DeleteModel
+@using ContosoCrafts.WebSite.Services
+@inject JsonFileProductService ProductService
+@{
+	ViewData["Title"] = "Delete Page";
+}
+<div class="container">
+    <h1>Delete Restaurant</h1>
+    <div class="container">
+        <form method="post">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <input asp-for="Product.Id" class="form-control" type="hidden" />
+            <input asp-for="Product.Title" class="form-control" type="hidden" />
+            <input asp-for="Product.Url" class="form-control" type="hidden" />
+            <input asp-for="Product.Image" class="form-control" type="hidden" />
+            <input asp-for="Product.Description" class="form-control" type="hidden" />
+            <h2 class="title" id="restaurauntTitle">@Model.Product.Title</h2>
+            <img class="restauraunt-img" id="restaurauntImage" src='@Model.Product.Image' alt='Image for @Model.Product.Title'
+                onerror="this.src='https://d1csarkz8obe9u.cloudfront.net/posterpreviews/restaurant-instagram-post-advertisement-design-template-5e3dde31601916fac13b611b18066f52_screen.jpg?ts=1622274831';this.onerror='';">
+            <h3 class="restauraunt-description">@Model.Product.Description</h3>
+            <h4>Are you sure you want to permanantly remove this restauraunt from the database?</h4>
+            <button class="btn btn-primary" type="submit">Confirm Delete</button>
+        </form>
+    </div>
+</div>

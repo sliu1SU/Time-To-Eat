@@ -1,0 +1,74 @@
+﻿@{
+    var routeUrl = Url.RouteUrl(ViewContext.RouteData.Values);
+    var qsPath = ViewContext.HttpContext.Request.QueryString.Value;
+    var returnUrl = $"{routeUrl}{qsPath}";
+}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - Time To Eat!</title>
+    <!-- favicon logos-->
+    <link rel="icon" href="~/favicon/favicon.ico" type="image/x-icon">
+
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.css" />
+    <link rel="stylesheet" href="~/css/site.css" />
+    <link href="https://fonts.googleapis.com/css?family=Yellowtail&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css?family=Nunito&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Sacramento&display=swap" rel="stylesheet">
+    <base href="~/" />
+</head>
+<body>
+    <header>
+        @{
+            if (returnUrl == "/")
+            {
+                <a class="d-flex justify-content-center bg-white" asp-page="/Index">
+                    <img id="logo-image-home" src="data/Logo.png" alt="Logo" />
+                </a>
+            }
+        }
+        <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-navbar box-shadow mb-5justify-content-center">
+            <div class="container">
+            @if (returnUrl != "/")
+            {
+                <a class="navbar-brand" id="font-size" asp-area="" asp-page="/Index">
+                    <img id="logo-image" src="~/data/Logo.png" alt="Logo" />
+                    Time to Eat
+                </a>
+            }
+                <button class="navbar-toggler" type="button" data-toggle="collapse" data-target=".navbar-collapse" aria-controls="navbarSupportedContent"
+                        aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="navbar-collapse collapse d-sm-inline-flex flex-sm-row-reverse">
+                    <ul class="navbar-nav flex-grow-1 justify-content-center">
+                        <li class="nav-item pr-3"><a class="nav-link text-dark" asp-page="/Home"><h4>RESTAURANTS</h4></a></li>
+                        <li class="nav-item pr-3"><a class="nav-link text-dark" asp-page="/Privacy"><h4>PRIVACY</h4></a></li>
+                        <li class="nav-item pr-3"><a class="nav-link text-dark" asp-page="/Restaurants/Index"><h4>INDEX</h4></a></li>
+                    </ul>
+                </div>
+            </div>  
+        </nav>
+    </header>
+    <main role="main" class="pb-3">
+        <div class="container">
+                @RenderBody()
+        </div>
+    </main>
+
+    <footer class="border-top footer text-muted bg-footer">
+        <div class="container">
+            &copy; 2022 - Time To Eat - <a asp-area="" asp-page="/Privacy">Privacy</a>
+        </div>
+    </footer>
+
+    <script src="~/lib/jquery/dist/jquery.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.js"></script>
+    <script src="~/js/site.js" asp-append-version="true"></script>
+
+    @RenderSection("Scripts", required: false)
+</body>
+</html>
+

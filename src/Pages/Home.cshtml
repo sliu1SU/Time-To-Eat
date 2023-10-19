@@ -1,0 +1,58 @@
+﻿@page
+@using ContosoCrafts.WebSite.Components
+@using ContosoCrafts.WebSite.Services
+@inject JsonFileProductService ProductService
+@model IndexModel
+@{
+    ViewData["Title"] = "Home page";
+    DateTime UTCToPacific(DateTime dateTime)
+    {
+        return TimeZoneInfo.ConvertTimeFromUtc(dateTime,
+            TimeZoneInfo.FindSystemTimeZoneById("Pacific Standard Time"));
+    }
+    DateTime now = UTCToPacific(DateTime.UtcNow);
+    string GetTodayBusinessHours(List<int[]> hours)
+    {
+        var hour = hours[(int)(now.DayOfWeek + 6) % 7];
+        return $"{hour[0]}:00 - {hour[1]}:00";
+    }
+}
+
+<script src="_framework/blazor.server.js"></script>
+
+<div class="container-fluid">
+    <h1 class="mt-5">Open at @now.ToString("hh:mm tt")</h1>
+    <p class="subtitle">Feeling Hungry? These places are open right now!</p>
+    <hr/>
+    <div class="scrolling-wrapper row flex-row flex-nowrap mt-4 pb-4 pt-2">
+			@foreach (var product in ProductService.GetProductsByTime(now.Hour + 1))
+            {
+                <div class="col-5">
+				    <a href="/Restaurants/DetailUser/@product.Id" class="card card-block" style="background-image: url(@product.Image);">
+                        <div class="card-block-content">
+                            <h5>@product.Title</h5>
+                            <p>@GetTodayBusinessHours(product.Hours)</p>
+                        </div>
+                    </a>
+			    </div>
+            }
+    </div>
+
+</div>
+
+<h1 class="mt-5">All Restaurants</h1>
+<hr/>
+<div  class="container-fluid" id="cards_wrapper">
+    <div class="row">
+    @foreach (var product in ProductService.GetAllData())
+    {
+        <component 
+        type="typeof(ProductCard)" 
+        render-mode="ServerPrerendered" 
+        param-Product="@product"
+        />
+    }
+    </div>
+</div>
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css"> 

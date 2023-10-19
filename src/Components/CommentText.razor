@@ -1,0 +1,139 @@
+@using ContosoCrafts.WebSite.Models
+@using ContosoCrafts.WebSite.Services
+@using Microsoft.AspNetCore.Components.Web
+@inject JsonFileProductService ProductService
+
+@if (Comment != null) {
+    <div class="alert alert-secondary d-flex justify-content-between">
+        <div>
+            @if (editMode)
+            {
+                <input class="form-control" type="text" @bind="editedComment">
+            } 
+
+            @if (!editMode)
+            {
+                <span class="d-flex">@Comment.Comment</span>
+            }
+        </div>
+
+        <div class="d-flex">        
+            @if (editMode) 
+            {
+                <button class="btn btn-sm btn-outline-success ml-1" @onclick="SaveComment">Save</button>
+                <button class="btn btn-sm btn-outline-primary ml-1" @onclick="FinishEdit">Cancel</button>  
+            }
+
+            @if (deleteMode) 
+            {
+                <button class="btn btn-sm btn-danger ml-1" @onclick="ConfirmDelete">Confirm</button>
+                <button class="btn btn-sm btn-outline-primary ml-1" @onclick="FinishEdit">Cancel</button>   
+            }    
+
+            @if (!deleteMode && !editMode)
+            {
+                <button class="btn btn-sm btn-outline-primary ml-1" @onclick="EditComment">Edit</button>
+                <button class="btn btn-sm btn-outline-danger ml-1" @onclick="DeleteComment">Delete</button>
+            }
+        </div>
+    </div>
+}
+
+@code {
+    // The comment to be displayed
+    [Parameter]
+    public CommentModel Comment { get; set; }
+    
+    // mode to edit the comment
+    bool editMode = false;
+    
+    // mode to delete the comment
+    bool deleteMode = false;
+
+    // the edited comment
+    string editedComment;
+
+    /// <summary>
+    /// Save the edited comment
+    /// </summary>
+    void SaveComment()
+    {
+        if (Comment.Comment.Equals(editedComment))
+        {
+            FinishEdit();
+            return;
+        }
+
+        Comment.Comment = editedComment;
+
+        var product = ProductService.GetProducts().FirstOrDefault(p => 
+            {
+                var comment = p.CommentList.FirstOrDefault(c => c.Id.Equals(Comment.Id));
+
+                if ( comment != null)
+                {
+                    comment.Comment = editedComment;
+                    return true;
+                }
+
+                return false;
+            }
+        );
+
+        ProductService.UpdateData(product);
+        FinishEdit();
+    }
+    
+    /// <summary>
+    /// Confirm the deletion of the comment
+    /// </summary>
+    void ConfirmDelete()
+    {
+        var product = ProductService.GetProducts().FirstOrDefault(p => 
+            {
+                var comment = p.CommentList.FirstOrDefault(c => c.Id.Equals(Comment.Id));
+
+                if (comment != null)
+                {
+                    p.CommentList = p.CommentList.Where(c => !c.Id.Equals(Comment.Id)).ToList();
+                    return true;
+                }
+
+                return false;
+            }
+        );
+
+        ProductService.UpdateData(product);
+        FinishEdit();
+        Comment = null;
+    }
+
+    /// <summary>
+    /// Turn on the delete mode
+    /// </summary>
+    void DeleteComment()
+    {
+        deleteMode = true;
+        editMode = false;
+    }
+
+    /// <summary>
+    /// Turn on the edit mode
+    /// </summary>
+    void EditComment()
+    {
+        editedComment = Comment.Comment;
+        editMode = true;
+        deleteMode = false;
+        
+    }
+
+    /// <summary>
+    /// Turn off the edit and delete mode
+    /// </summary>
+    void FinishEdit()
+    {
+        deleteMode = false;
+        editMode = false;
+    }
+}
